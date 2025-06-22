@@ -1,53 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Shield, Eye, EyeOff, User, CheckCircle, UserPlus, Building } from 'lucide-react';
+import axios from 'axios';
+import { AuthContext } from '../context/Authcontext';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    accountType: 'User',
+    accountType: 'CUSTOMER',
     firstName: '',
     lastName: '',
     email: '',
     phoneNumber: '',
     otp: '',
-    area: '',
-    state: '',
-    city: '',
-    pincode: '',
+    address: {
+      area: '',
+      state: '',
+      city: '',
+      pinCode: '',
+    },
     agencyNumber: '',
-    reraNumber: ''
+    reraNumber: '',
   });
-  
+
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [showOtp, setShowOtp] = useState(false);
   const [countdown, setCountdown] = useState(0);
+  const { login } = useContext(AuthContext);
 
-  // Validate phone number (Indian format)
   const validatePhoneNumber = (phone) => {
     const phoneRegex = /^[6-9]\d{9}$/;
     return phoneRegex.test(phone);
   };
 
-  // Validate email
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
-  // Validate pincode
-  const validatePincode = (pincode) => {
-    const pincodeRegex = /^[1-9][0-9]{5}$/;
-    return pincodeRegex.test(pincode);
+  const validatePinCode = (pinCode) => {
+    const pinCodeRegex = /^[1-9][0-9]{5}$/;
+    return pinCodeRegex.test(pinCode);
   };
 
   const sendOTP = async () => {
     setErrors({});
-    
-    // Validation
+
     const newErrors = {};
-    
+
     if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
     if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
     if (!formData.email) {
@@ -58,50 +59,49 @@ const Signup = () => {
     if (!formData.phoneNumber) {
       newErrors.phoneNumber = 'Phone number is required';
     } else if (!validatePhoneNumber(formData.phoneNumber)) {
-      newErrors.phoneNumber = 'Please enter a valid 10-digit mobile number';
+      newErrors.phoneNumber = 'Please enter a valid 10-digit phone number';
     }
-    
-    // Location validation
-    if (!formData.area.trim()) newErrors.area = 'Area is required';
-    if (!formData.state.trim()) newErrors.state = 'State is required';
-    if (!formData.city.trim()) newErrors.city = 'City is required';
-    if (!formData.pincode) {
-      newErrors.pincode = 'Pincode is required';
-    } else if (!validatePincode(formData.pincode)) {
-      newErrors.pincode = 'Please enter a valid 6-digit pincode';
+
+    if (!formData.address.area.trim()) newErrors.area = 'Area is required';
+    if (!formData.address.state.trim()) newErrors.state = 'State is required';
+    if (!formData.address.city.trim()) newErrors.city = 'City is required';
+    if (!formData.address.pinCode) {
+      newErrors.pinCode = 'Pincode is required';
+    } else if (!validatePinCode(formData.address.pinCode)) {
+      newErrors.pinCode = 'Please enter a valid 6-digit pincode';
     }
-    
-    // Broker-specific validation
-    if (formData.accountType === 'Broker') {
+
+    if (formData.accountType === 'BROKER') {
       if (!formData.agencyNumber.trim()) newErrors.agencyNumber = 'Agency number is required';
       if (!formData.reraNumber.trim()) newErrors.reraNumber = 'RERA number is required';
     }
-    
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
     setIsLoading(true);
-    
-    try {
-      // Simulate API call to your backend
-      const response = await fetch('/api/auth/send-signup-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          phoneNumber: `+91${formData.phoneNumber}`,
-          email: formData.email
-        }),
-      });
 
-      if (response.ok) {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/auth/send-registration-otp`,
+        {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phoneNumber: formData.phoneNumber,
+          userRole: formData.accountType.toUpperCase(),
+          address: formData.address,
+          agencyName: formData.agencyNumber,
+          reraNumber: formData.reraNumber,
+        }
+      );
+
+      if (response.status === 200) {
         setIsOtpSent(true);
         setCountdown(30);
-        
-        // Start countdown timer
+
         const timer = setInterval(() => {
           setCountdown((prev) => {
             if (prev <= 1) {
@@ -112,7 +112,7 @@ const Signup = () => {
           });
         }, 1000);
       } else {
-        const errorData = await response.json();
+        const errorData = response.data;
         setErrors({ general: errorData.message || 'Failed to send OTP' });
       }
     } catch (error) {
@@ -130,36 +130,27 @@ const Signup = () => {
       return;
     }
 
-    if (formData.otp.length !== 6) {
-      setErrors({ otp: 'OTP must be 6 digits' });
+    if (formData.otp.length !== 4) {
+      setErrors({ otp: 'OTP must be 4 digits' });
       return;
     }
 
     setIsLoading(true);
 
     try {
-      // Simulate API call to your backend
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          ...formData,
-          phoneNumber: `+91${formData.phoneNumber}`
-        }),
-      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/auth/verify-registration-otp`,
+        {
+          phoneNumber: formData.phoneNumber,
+          otp: formData.otp,
+        }
+      );
 
-      if (response.ok) {
-        const data = await response.json();
-        // Handle successful signup
-        // Note: In a real app, you'd use proper authentication state management
-        // localStorage is not available in this environment
-        
-        // Redirect to dashboard or home page
-        window.location.href = '/dashboard';
+      if (response.status === 200) {
+        const data = response.data;
+        login(data.token, data.user);
       } else {
-        const errorData = await response.json();
+        const errorData = response.data;
         setErrors({ otp: errorData.message || 'Invalid OTP or signup failed' });
       }
     } catch (error) {
@@ -174,7 +165,7 @@ const Signup = () => {
     return digits.slice(0, 10);
   };
 
-  const formatPincode = (value) => {
+  const formatPinCode = (value) => {
     const digits = value.replace(/\D/g, '');
     return digits.slice(0, 6);
   };
@@ -182,17 +173,26 @@ const Signup = () => {
   const handleInputChange = (field, value) => {
     if (field === 'phoneNumber') {
       value = formatPhoneNumber(value);
-    } else if (field === 'pincode') {
-      value = formatPincode(value);
+    } else if (field === 'pinCode') {
+      value = formatPinCode(value);
     } else if (field === 'otp') {
-      value = value.replace(/\D/g, '').slice(0, 6);
+      value = value.replace(/\D/g, '').slice(0, 4);
     }
-    
-    setFormData(prev => ({ ...prev, [field]: value }));
-    
-    // Clear error when user starts typing
+
+    if (['area', 'state', 'city', 'pinCode'].includes(field)) {
+      setFormData((prev) => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          [field]: value,
+        },
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [field]: value }));
+    }
+
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+      setErrors((prev) => ({ ...prev, [field]: '' }));
     }
   };
 
@@ -220,15 +220,13 @@ const Signup = () => {
           <div className="space-y-6">
             {/* Account Type Selection */}
             <div>
-              <label className="block text-sm font-medium text-white/90 mb-3">
-                Account Type
-              </label>
+              <label className="block text-sm font-medium text-white/90 mb-3">Account Type</label>
               <div className="flex gap-3">
                 <button
                   type="button"
-                  onClick={() => handleInputChange('accountType', 'User')}
+                  onClick={() => handleInputChange('accountType', 'CUSTOMER')}
                   className={`flex-1 px-4 py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
-                    formData.accountType === 'User'
+                    formData.accountType === 'CUSTOMER'
                       ? 'bg-indigo-600 text-white border-2 border-indigo-500'
                       : 'bg-white/10 text-white/70 border-2 border-white/20 hover:bg-white/20'
                   }`}
@@ -238,9 +236,9 @@ const Signup = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleInputChange('accountType', 'Broker')}
+                  onClick={() => handleInputChange('accountType', 'BROKER')}
                   className={`flex-1 px-4 py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${
-                    formData.accountType === 'Broker'
+                    formData.accountType === 'BROKER'
                       ? 'bg-indigo-600 text-white border-2 border-indigo-500'
                       : 'bg-white/10 text-white/70 border-2 border-white/20 hover:bg-white/20'
                   }`}
@@ -254,9 +252,7 @@ const Signup = () => {
             {/* Personal Information */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-white/90 mb-2">
-                  First Name
-                </label>
+                <label className="block text-sm font-medium text-white/90 mb-2">First Name</label>
                 <input
                   type="text"
                   value={formData.firstName}
@@ -266,14 +262,10 @@ const Signup = () => {
                     errors.firstName ? 'border-red-400' : 'border-white/30'
                   }`}
                 />
-                {errors.firstName && (
-                  <p className="text-red-400 text-xs mt-1">{errors.firstName}</p>
-                )}
+                {errors.firstName && <p className="text-red-400 text-xs mt-1">{errors.firstName}</p>}
               </div>
               <div>
-                <label className="block text-sm font-medium text-white/90 mb-2">
-                  Last Name
-                </label>
+                <label className="block text-sm font-medium text-white/90 mb-2">Last Name</label>
                 <input
                   type="text"
                   value={formData.lastName}
@@ -283,17 +275,13 @@ const Signup = () => {
                     errors.lastName ? 'border-red-400' : 'border-white/30'
                   }`}
                 />
-                {errors.lastName && (
-                  <p className="text-red-400 text-xs mt-1">{errors.lastName}</p>
-                )}
+                {errors.lastName && <p className="text-red-400 text-xs mt-1">{errors.lastName}</p>}
               </div>
             </div>
 
             {/* Email Address */}
             <div>
-              <label className="block text-sm font-medium text-white/90 mb-2">
-                Email Address
-              </label>
+              <label className="block text-sm font-medium text-white/90 mb-2">Email Address</label>
               <input
                 type="email"
                 value={formData.email}
@@ -303,16 +291,12 @@ const Signup = () => {
                   errors.email ? 'border-red-400' : 'border-white/30'
                 }`}
               />
-              {errors.email && (
-                <p className="text-red-400 text-sm mt-1">{errors.email}</p>
-              )}
+              {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
             </div>
 
-            {/* Mobile Number */}
+            {/* Phone Number */}
             <div>
-              <label className="block text-sm font-medium text-white/90 mb-2">
-                Mobile Number
-              </label>
+              <label className="block text-sm font-medium text-white/90 mb-2">Phone Number</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-3">
                   <Phone className="w-5 h-5 text-white/60" />
@@ -322,101 +306,81 @@ const Signup = () => {
                   type="tel"
                   value={formData.phoneNumber}
                   onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-                  placeholder="Enter 10-digit mobile number"
+                  placeholder="Enter 10-digit phone number"
                   className={`w-full pl-20 pr-4 py-3 bg-white/10 border rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all ${
                     errors.phoneNumber ? 'border-red-400' : 'border-white/30'
                   }`}
                 />
               </div>
-              {errors.phoneNumber && (
-                <p className="text-red-400 text-sm mt-1">{errors.phoneNumber}</p>
-              )}
+              {errors.phoneNumber && <p className="text-red-400 text-sm mt-1">{errors.phoneNumber}</p>}
             </div>
 
             {/* Location Information */}
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-white/90 mb-2">
-                    Area
-                  </label>
+                  <label className="block text-sm font-medium text-white/90 mb-2">Area</label>
                   <input
                     type="text"
-                    value={formData.area}
+                    value={formData.address.area}
                     onChange={(e) => handleInputChange('area', e.target.value)}
                     placeholder="Enter area"
                     className={`w-full px-4 py-3 bg-white/10 border rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all ${
                       errors.area ? 'border-red-400' : 'border-white/30'
                     }`}
                   />
-                  {errors.area && (
-                    <p className="text-red-400 text-xs mt-1">{errors.area}</p>
-                  )}
+                  {errors.area && <p className="text-red-400 text-xs mt-1">{errors.area}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-white/90 mb-2">
-                    State
-                  </label>
+                  <label className="block text-sm font-medium text-white/90 mb-2">State</label>
                   <input
                     type="text"
-                    value={formData.state}
+                    value={formData.address.state}
                     onChange={(e) => handleInputChange('state', e.target.value)}
                     placeholder="Enter state"
                     className={`w-full px-4 py-3 bg-white/10 border rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all ${
                       errors.state ? 'border-red-400' : 'border-white/30'
                     }`}
                   />
-                  {errors.state && (
-                    <p className="text-red-400 text-xs mt-1">{errors.state}</p>
-                  )}
+                  {errors.state && <p className="text-red-400 text-xs mt-1">{errors.state}</p>}
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-white/90 mb-2">
-                    City
-                  </label>
+                  <label className="block text-sm font-medium text-white/90 mb-2">City</label>
                   <input
                     type="text"
-                    value={formData.city}
+                    value={formData.address.city}
                     onChange={(e) => handleInputChange('city', e.target.value)}
                     placeholder="Enter city"
                     className={`w-full px-4 py-3 bg-white/10 border rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all ${
                       errors.city ? 'border-red-400' : 'border-white/30'
                     }`}
                   />
-                  {errors.city && (
-                    <p className="text-red-400 text-xs mt-1">{errors.city}</p>
-                  )}
+                  {errors.city && <p className="text-red-400 text-xs mt-1">{errors.city}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-white/90 mb-2">
-                    Pincode
-                  </label>
+                  <label className="block text-sm font-medium text-white/90 mb-2">Pincode</label>
                   <input
                     type="text"
-                    value={formData.pincode}
-                    onChange={(e) => handleInputChange('pincode', e.target.value)}
+                    value={formData.address.pinCode}
+                    onChange={(e) => handleInputChange('pinCode', e.target.value)}
                     placeholder="Enter pincode"
                     className={`w-full px-4 py-3 bg-white/10 border rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all ${
-                      errors.pincode ? 'border-red-400' : 'border-white/30'
+                      errors.pinCode ? 'border-red-400' : 'border-white/30'
                     }`}
                   />
-                  {errors.pincode && (
-                    <p className="text-red-400 text-xs mt-1">{errors.pincode}</p>
-                  )}
+                  {errors.pinCode && <p className="text-red-400 text-xs mt-1">{errors.pinCode}</p>}
                 </div>
               </div>
             </div>
 
             {/* Broker-specific fields */}
-            {formData.accountType === 'Broker' && (
+            {formData.accountType === 'BROKER' && (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-white/90 mb-2">
-                    Agency Number
-                  </label>
+                  <label className="block text-sm font-medium text-white/90 mb-2">Agency Number</label>
                   <input
                     type="text"
                     value={formData.agencyNumber}
@@ -426,14 +390,10 @@ const Signup = () => {
                       errors.agencyNumber ? 'border-red-400' : 'border-white/30'
                     }`}
                   />
-                  {errors.agencyNumber && (
-                    <p className="text-red-400 text-sm mt-1">{errors.agencyNumber}</p>
-                  )}
+                  {errors.agencyNumber && <p className="text-red-400 text-sm mt-1">{errors.agencyNumber}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-white/90 mb-2">
-                    RERA Number
-                  </label>
+                  <label className="block text-sm font-medium text-white/90 mb-2">RERA Number</label>
                   <input
                     type="text"
                     value={formData.reraNumber}
@@ -443,9 +403,7 @@ const Signup = () => {
                       errors.reraNumber ? 'border-red-400' : 'border-white/30'
                     }`}
                   />
-                  {errors.reraNumber && (
-                    <p className="text-red-400 text-sm mt-1">{errors.reraNumber}</p>
-                  )}
+                  {errors.reraNumber && <p className="text-red-400 text-sm mt-1">{errors.reraNumber}</p>}
                 </div>
               </div>
             )}
@@ -491,19 +449,17 @@ const Signup = () => {
             {isOtpSent && (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-white/90 mb-2">
-                    Enter OTP
-                  </label>
+                  <label className="block text-sm font-medium text-white/90 mb-2">Enter OTP</label>
                   <div className="relative">
                     <input
                       type={showOtp ? 'text' : 'password'}
                       value={formData.otp}
                       onChange={(e) => handleInputChange('otp', e.target.value)}
-                      placeholder="Enter 6-digit OTP"
+                      placeholder="Enter 4-digit OTP"
                       className={`w-full pl-4 pr-12 py-3 bg-white/10 border rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-center text-lg tracking-widest ${
                         errors.otp ? 'border-red-400' : 'border-white/30'
                       }`}
-                      maxLength={6}
+                      maxLength={4}
                     />
                     <button
                       type="button"
@@ -513,9 +469,7 @@ const Signup = () => {
                       {showOtp ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
                   </div>
-                  {errors.otp && (
-                    <p className="text-red-400 text-sm mt-1">{errors.otp}</p>
-                  )}
+                  {errors.otp && <p className="text-red-400 text-sm mt-1">{errors.otp}</p>}
                 </div>
 
                 {/* Resend OTP */}

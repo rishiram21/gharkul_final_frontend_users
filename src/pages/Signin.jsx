@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Shield, Eye, EyeOff, User, CheckCircle } from 'lucide-react';
+import { AuthContext } from '../context/Authcontext';
 
 const Signin = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -10,8 +11,8 @@ const Signin = () => {
   const [errors, setErrors] = useState({});
   const [showOtp, setShowOtp] = useState(false);
   const [countdown, setCountdown] = useState(0);
+  const { login } = useContext(AuthContext);
 
-  // Validate phone number (Indian format)
   const validatePhoneNumber = (phone) => {
     const phoneRegex = /^[6-9]\d{9}$/;
     return phoneRegex.test(phone);
@@ -19,34 +20,32 @@ const Signin = () => {
 
   const sendOTP = async () => {
     setErrors({});
-    
+
     if (!phoneNumber) {
       setErrors({ phone: 'Phone number is required' });
       return;
     }
-    
+
     if (!validatePhoneNumber(phoneNumber)) {
       setErrors({ phone: 'Please enter a valid 10-digit mobile number' });
       return;
     }
 
     setIsLoading(true);
-    
+
     try {
-      // Simulate API call to your backend
-      const response = await fetch('/api/auth/send-otp', {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/auth/send-login-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ phoneNumber: `+91${phoneNumber}` }),
+        body: JSON.stringify({ phoneNumber }),
       });
 
       if (response.ok) {
         setIsOtpSent(true);
         setCountdown(30);
-        
-        // Start countdown timer
+
         const timer = setInterval(() => {
           setCountdown((prev) => {
             if (prev <= 1) {
@@ -75,34 +74,28 @@ const Signin = () => {
       return;
     }
 
-    if (otp.length !== 6) {
-      setErrors({ otp: 'OTP must be 6 digits' });
+    if (otp.length !== 4) {
+      setErrors({ otp: 'OTP must be 4 digits' });
       return;
     }
 
     setIsLoading(true);
 
     try {
-      // Simulate API call to your backend
-      const response = await fetch('/api/auth/verify-otp', {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/auth/verify-login-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ 
-          phoneNumber: `+91${phoneNumber}`, 
-          otp: otp 
+        body: JSON.stringify({
+          phoneNumber: `${phoneNumber}`,
+          otp: otp,
         }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        // Handle successful login
-        localStorage.setItem('authToken', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        
-        // Redirect to dashboard or home page
-        window.location.href = '/dashboard';
+        login(data.token, data.user);
       } else {
         const errorData = await response.json();
         setErrors({ otp: errorData.message || 'Invalid OTP' });
@@ -115,9 +108,7 @@ const Signin = () => {
   };
 
   const formatPhoneNumber = (value) => {
-    // Remove all non-digits
     const digits = value.replace(/\D/g, '');
-    // Limit to 10 digits
     return digits.slice(0, 10);
   };
 
@@ -180,9 +171,7 @@ const Signin = () => {
                   disabled={isOtpSent}
                 />
               </div>
-              {errors.phone && (
-                <p className="text-red-400 text-sm mt-1">{errors.phone}</p>
-              )}
+              {errors.phone && <p className="text-red-400 text-sm mt-1">{errors.phone}</p>}
             </div>
 
             {/* Send OTP Button */}
@@ -219,19 +208,17 @@ const Signin = () => {
             {isOtpSent && (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-white/90 mb-2">
-                    Enter OTP
-                  </label>
+                  <label className="block text-sm font-medium text-white/90 mb-2">Enter OTP</label>
                   <div className="relative">
                     <input
                       type={showOtp ? 'text' : 'password'}
                       value={otp}
                       onChange={handleOtpChange}
-                      placeholder="Enter 6-digit OTP"
+                      placeholder="Enter 4-digit OTP"
                       className={`w-full pl-4 pr-12 py-3 bg-white/10 border rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-center text-lg tracking-widest ${
                         errors.otp ? 'border-red-400' : 'border-white/30'
                       }`}
-                      maxLength={6}
+                      maxLength={4}
                     />
                     <button
                       type="button"
@@ -241,9 +228,7 @@ const Signin = () => {
                       {showOtp ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>
                   </div>
-                  {errors.otp && (
-                    <p className="text-red-400 text-sm mt-1">{errors.otp}</p>
-                  )}
+                  {errors.otp && <p className="text-red-400 text-sm mt-1">{errors.otp}</p>}
                 </div>
 
                 {/* Resend OTP */}
@@ -281,36 +266,6 @@ const Signin = () => {
               </div>
             )}
           </div>
-
-          {/* Divider */}
-          {/* <div className="relative my-8">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/20"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white/10 text-white/70 rounded-full">
-                Or continue with
-              </span>
-            </div>
-          </div> */}
-
-          {/* Social Login */}
-          {/* <div className="space-y-3">
-            <button
-              type="button"
-              className="w-full flex items-center justify-center px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 transition-all transform hover:scale-105"
-            >
-              <img className="h-5 w-5" src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google logo"/>
-              <span className="ml-3 font-medium">Continue with Google</span>
-            </button> */}
-            {/* <button
-              type="button"
-              className="w-full flex items-center justify-center px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 transition-all transform hover:scale-105"
-            >
-              <img className="h-5 w-5" src="https://www.svgrepo.com/show/303139/apple-logo.svg" alt="Apple logo"/>
-              <span className="ml-3 font-medium">Continue with Apple</span>
-            </button> */}
-          {/* </div> */}
 
           {/* Sign Up Link */}
           <p className="mt-8 text-center text-sm text-white/70">

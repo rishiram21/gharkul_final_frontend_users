@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, User, Plus } from 'lucide-react';
+import { Home, User, Plus, LogOut } from 'lucide-react';
+import { AuthContext } from '../context/Authcontext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { isAuthenticated, logout } = useContext(AuthContext);
 
   const isActive = (path) => {
     return location.pathname === path;
@@ -18,86 +20,117 @@ const Navbar = () => {
           <Link to="/" className="flex items-center space-x-3">
             <img src="/gharkul.png" alt="Gharkul Logo" className="h-10 w-10 object-contain" />
             <span className="text-xl font-bold text-gray-800">Gharkul</span>
-        </Link>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link 
-              to="/home" 
+            <Link
+              to="/home"
               className={`font-medium transition-colors ${
-                isActive('/') || isActive('/home') 
-                  ? 'text-blue-600' 
+                isActive('/') || isActive('/home')
+                  ? 'text-blue-600'
                   : 'text-gray-700 hover:text-blue-600'
               }`}
             >
               Home
             </Link>
-            <Link 
-              to="/listing" 
+            <Link
+              to="/listing"
               className={`font-medium transition-colors ${
-                isActive('/listing') 
-                  ? 'text-blue-600' 
+                isActive('/listing')
+                  ? 'text-blue-600'
                   : 'text-gray-700 hover:text-blue-600'
               }`}
             >
               Listing
             </Link>
-            <Link 
-              to="/features" 
+            <Link
+              to="/features"
               className={`font-medium transition-colors ${
-                isActive('/features') 
-                  ? 'text-blue-600' 
+                isActive('/features')
+                  ? 'text-blue-600'
                   : 'text-gray-700 hover:text-blue-600'
               }`}
             >
               Features
             </Link>
-            <Link 
-              to="/about" 
+            <Link
+                to="/subscription"
+                className={`font-medium ${
+                  isActive('/subscription')
+                    ? 'text-blue-600'
+                    : 'text-gray-700 hover:text-blue-600'
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Subcription
+              </Link>
+            <Link
+              to="/about"
               className={`font-medium transition-colors ${
-                isActive('/about') 
-                  ? 'text-blue-600' 
+                isActive('/about')
+                  ? 'text-blue-600'
                   : 'text-gray-700 hover:text-blue-600'
               }`}
             >
               About Us
             </Link>
-            <Link 
-              to="/contact" 
+            <Link
+              to="/contact"
               className={`font-medium transition-colors ${
-                isActive('/contact') 
-                  ? 'text-blue-600' 
+                isActive('/contact')
+                  ? 'text-blue-600'
                   : 'text-gray-700 hover:text-blue-600'
               }`}
             >
               Contact Us
             </Link>
-            
           </div>
 
           {/* Action Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link 
-              to="/signin" 
-              className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
-            >
-              <User className="h-4 w-4" />
-              <span>Sign In</span>
-            </Link>
-            <Link 
-              to="/postproperty" 
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
-            >
-              <Plus className="h-4 w-4" />
-              <span>Post Property</span>
-            </Link>
-            <Link 
-              to="/postrequirement" 
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
-            >
-              <Plus className="h-4 w-4" />
-              <span>Post Requirement</span>
-            </Link>
+            {!isAuthenticated ? (
+              <>
+                <Link
+                  to="/signin"
+                  className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                >
+                  <User className="h-4 w-4" />
+                  <span>Sign In</span>
+                </Link>
+                <Link
+                  to="/signup"
+                  className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                >
+                  <User className="h-4 w-4" />
+                  <span>Sign Up</span>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/postproperty"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>Post Property</span>
+                </Link>
+                <Link
+                  to="/postrequirement"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>Post Requirement</span>
+                </Link>
+                <button
+                  onClick={logout}
+                  className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Logout</span>
+                </button>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -117,55 +150,66 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="md:hidden border-t border-gray-200 py-4">
             <div className="flex flex-col space-y-3">
-              <Link 
-                to="/home" 
+              <Link
+                to="/home"
                 className={`font-medium ${
-                  isActive('/') || isActive('/home') 
-                    ? 'text-blue-600' 
+                  isActive('/') || isActive('/home')
+                    ? 'text-blue-600'
                     : 'text-gray-700 hover:text-blue-600'
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 Home
               </Link>
-              <Link 
-                to="/listing" 
+              <Link
+                to="/listing"
                 className={`font-medium ${
-                  isActive('/listing') 
-                    ? 'text-blue-600' 
+                  isActive('/listing')
+                    ? 'text-blue-600'
                     : 'text-gray-700 hover:text-blue-600'
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 Listing
               </Link>
-              <Link 
-                to="/features" 
+              <Link
+                to="/features"
                 className={`font-medium ${
-                  isActive('/features') 
-                    ? 'text-blue-600' 
+                  isActive('/features')
+                    ? 'text-blue-600'
                     : 'text-gray-700 hover:text-blue-600'
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 Features
               </Link>
-              <Link 
-                to="/about" 
+              <Link
+                to="/subscription"
                 className={`font-medium ${
-                  isActive('/about') 
-                    ? 'text-blue-600' 
+                  isActive('/subscription')
+                    ? 'text-blue-600'
+                    : 'text-gray-700 hover:text-blue-600'
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Subcription
+              </Link>
+              <Link
+                to="/about"
+                className={`font-medium ${
+                  isActive('/about')
+                    ? 'text-blue-600'
                     : 'text-gray-700 hover:text-blue-600'
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 About Us
               </Link>
-              <Link 
-                to="/contact" 
+              <Link
+                to="/contact"
                 className={`font-medium ${
-                  isActive('/contact') 
-                    ? 'text-blue-600' 
+                  isActive('/contact')
+                    ? 'text-blue-600'
                     : 'text-gray-700 hover:text-blue-600'
                 }`}
                 onClick={() => setIsMenuOpen(false)}
@@ -173,30 +217,55 @@ const Navbar = () => {
                 Contact Us
               </Link>
               <div className="flex flex-col space-y-2 pt-3 border-t">
-                <Link 
-                  to="/signin" 
-                  className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 font-medium"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <User className="h-4 w-4" />
-                  <span>Sign In</span>
-                </Link>
-                <Link 
-                  to="/postproperty" 
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 w-fit"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <Plus className="h-4 w-4" />
-                  <span>Post Property</span>
-                </Link>
-                <Link 
-                  to="/postrequirement" 
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 w-fit"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <Plus className="h-4 w-4" />
-                  <span>Post Requirement</span>
-                </Link>
+                {!isAuthenticated ? (
+                  <>
+                    <Link
+                      to="/signin"
+                      className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 font-medium"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <User className="h-4 w-4" />
+                      <span>Sign In</span>
+                    </Link>
+                    <Link
+                      to="/signup"
+                      className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 font-medium"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <User className="h-4 w-4" />
+                      <span>Sign Up</span>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/postproperty"
+                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 w-fit"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Plus className="h-4 w-4" />
+                      <span>Post Property</span>
+                    </Link>
+                    <Link
+                      to="/postrequirement"
+                      className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 w-fit"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Plus className="h-4 w-4" />
+                      <span>Post Requirement</span>
+                    </Link>
+                    <button
+                      onClick={() => {
+                        logout();
+                        setIsMenuOpen(false);
+                      }}
+                      className="flex items-center space-x-2 text-gray-700 hover:text-blue-600 font-medium"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span>Logout</span>
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>
