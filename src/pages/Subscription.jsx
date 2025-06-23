@@ -11,6 +11,10 @@ const Subscription = () => {
   const [animateCards, setAnimateCards] = useState(false);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     setAnimateCards(true);
   }, [showUserPlans]);
 

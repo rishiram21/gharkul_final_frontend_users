@@ -6,14 +6,18 @@ const Aboutus = () => {
   const [activeTab, setActiveTab] = useState('story');
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     setIsVisible(true);
   }, []);
 
   const stats = [
-    { number: '10K+', label: 'Happy Tenants', icon: Users },
-    { number: '5K+', label: 'Properties Listed', icon: Home },
-    { number: '15+', label: 'Years Experience', icon: Award },
-    { number: '98%', label: 'Customer Satisfaction', icon: Star }
+    { number: 'NA +', label: 'Happy Tenants', icon: Users },
+    { number: 'NA +', label: 'Properties Listed', icon: Home },
+    { number: 'NA +', label: 'Years Experience', icon: Award },
+    { number: 'NA %', label: 'Customer Satisfaction', icon: Star }
   ];
 
   const teamMembers = [

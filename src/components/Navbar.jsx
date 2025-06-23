@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Home, User, Plus, LogOut } from 'lucide-react';
-import { AuthContext } from '../context/Authcontext';
+import { AuthContext } from '../context/AuthContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -44,7 +44,7 @@ const Navbar = () => {
             >
               Listing
             </Link>
-            <Link
+            {/* <Link
               to="/features"
               className={`font-medium transition-colors ${
                 isActive('/features')
@@ -53,7 +53,7 @@ const Navbar = () => {
               }`}
             >
               Features
-            </Link>
+            </Link> */}
             <Link
                 to="/subscription"
                 className={`font-medium ${
@@ -65,7 +65,7 @@ const Navbar = () => {
               >
                 Subcription
               </Link>
-            <Link
+            {/* <Link
               to="/about"
               className={`font-medium transition-colors ${
                 isActive('/about')
@@ -84,7 +84,7 @@ const Navbar = () => {
               }`}
             >
               Contact Us
-            </Link>
+            </Link> */}
           </div>
 
           {/* Action Buttons */}

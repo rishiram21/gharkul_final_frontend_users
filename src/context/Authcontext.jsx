@@ -1,4 +1,3 @@
-// src/context/AuthContext.js
 import React, { createContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,6 +12,9 @@ export const AuthProvider = ({ children }) => {
     // Check if user is logged in by checking localStorage for a token
     const token = localStorage.getItem('authToken');
     const userData = localStorage.getItem('user');
+
+    console.log('Token:', token);
+    console.log('User Data:', userData);
 
     if (token && userData) {
       try {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Star, Phone, MessageCircle, Share2, MapPin, Home, Building, Users, Heart, Filter, Menu, X } from 'lucide-react';
 
 const HomePage = () => {
@@ -40,12 +40,16 @@ const HomePage = () => {
   ];
 
   const underConstructionProject = {
-    title: 'Ram Address One',
-    subtitle: 'Possession From Feb 19, 2025',
+    title: 'Gharkul Premises',
+    subtitle: 'Possession From NA',
     price: '₹ 2.5 Cr',
     status: 'Onwards*',
     image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=400&fit=crop&crop=center'
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">
@@ -262,15 +266,15 @@ const HomePage = () => {
         <div className="w-full px-3 md:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-4xl mx-auto">
             <div className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-blue-600">500+</div>
+              <div className="text-2xl md:text-3xl font-bold text-blue-600">NA +</div>
               <div className="text-gray-600 text-sm md:text-base">Properties</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-blue-600">200+</div>
+              <div className="text-2xl md:text-3xl font-bold text-blue-600">NA +</div>
               <div className="text-gray-600 text-sm md:text-base">Happy Clients</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-blue-600">50+</div>
+              <div className="text-2xl md:text-3xl font-bold text-blue-600">NA +</div>
               <div className="text-gray-600 text-sm md:text-base">Locations</div>
             </div>
             <div className="text-center">

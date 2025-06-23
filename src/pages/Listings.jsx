@@ -1,5 +1,5 @@
 // Listings.js
-import React from 'react';
+import React ,{useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Bed, Bath, Square, Heart } from 'lucide-react';
 
@@ -34,6 +34,10 @@ const Listings = () => {
     },
     // Add other properties here
   ];
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="bg-gray-50 min-h-screen py-12">
