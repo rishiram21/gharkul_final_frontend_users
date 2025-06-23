@@ -109,6 +109,15 @@ const Navbar = () => {
             ) : (
               <>
                 <Link
+                  to="/profile"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-blue-600 border border-blue-600 font-semibold hover:bg-blue-600 hover:text-white transition-all duration-200 shadow-sm w-fit"
+                >
+                  <User className="h-5 w-5 group-hover:scale-110 transition-transform duration-200" />
+                  <span className="tracking-wide">My Profile</span>
+                </Link>
+
+                <Link
                   to="/postproperty"
                   className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
                 >
@@ -238,6 +247,14 @@ const Navbar = () => {
                   </>
                 ) : (
                   <>
+                  <Link
+                  to="/profile"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="group inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-blue-600 border border-blue-600 font-semibold hover:bg-blue-600 hover:text-white transition-all duration-200 shadow-sm w-fit"
+                >
+                  <User className="h-5 w-5 group-hover:scale-110 transition-transform duration-200" />
+                  <span className="tracking-wide">My Profile</span>
+                </Link>
                     <Link
                       to="/postproperty"
                       className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2 w-fit"

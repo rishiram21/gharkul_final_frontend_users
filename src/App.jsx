@@ -15,6 +15,7 @@ import Contactus from './pages/Contactus';
 import Postrequirement from './pages/Postrequirement';
 import Propertydetails from './subpages/Propertydetails';
 import Subscription from './pages/Subscription';
+import UserProfile from './pages/UserProfile';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = React.useContext(AuthContext);
@@ -41,7 +42,12 @@ function App() {
               <Route path="/signin" element={<Signin />} />
               <Route path="/signup" element={<Signup />} />
 
+
+
               {/* Protected Routes */}
+
+              <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+
               <Route
                 path="/postproperty"
                 element={

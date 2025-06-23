@@ -54,14 +54,14 @@ const Footer = () => {
               <li className="text-gray-300 hover:text-white text-sm transition-colors">Help Center</li>
               <li className="text-gray-300 hover:text-white text-sm transition-colors">Privacy Policy</li>
               <li className="text-gray-300 hover:text-white text-sm transition-colors">Terms of Service</li>
-              <li className="text-gray-300 hover:text-white text-sm transition-colors">FAQ</li>
-              <li className="text-gray-300 hover:text-white text-sm transition-colors">Report Issue</li>
+              {/* <li className="text-gray-300 hover:text-white text-sm transition-colors">FAQ</li>
+              <li className="text-gray-300 hover:text-white text-sm transition-colors">Report Issue</li> */}
             </ul>
           </div>
         </div>
 
         {/* Newsletter Signup */}
-        <div className="mt-10 pt-8 border-t border-gray-800">
+        {/* <div className="mt-10 pt-8 border-t border-gray-800">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-center md:text-left">
               <h3 className="text-lg font-semibold mb-2">Stay Updated</h3>
@@ -78,7 +78,7 @@ const Footer = () => {
               </button>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Sub Footer */}

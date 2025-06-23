@@ -72,9 +72,8 @@ const PostProperty = () => {
     electricConnection: false,
   });
 
-  const cities = [
-    'Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Kolkata', 
-    'Pune', 'Ahmedabad', 'Jaipur', 'Surat', 'Lucknow', 'Kanpur'
+  const cities = [ 
+    'Pune'
   ];
 
   const handleAmenityChange = (amenity) => {
