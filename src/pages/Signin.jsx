@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Shield, Eye, EyeOff, User, CheckCircle } from 'lucide-react';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../context/Authcontext';
 
 const Signin = () => {
   const [phoneNumber, setPhoneNumber] = useState('');

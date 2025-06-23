@@ -137,7 +137,7 @@ const PostProperty = () => {
       </h2>
       <div className="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center">
         <p className="mb-2">
-          {propertyType === 'Residential' && (transactionType === 'Rent' || transactionType === 'Buy') 
+          {propertyType === 'Residential' && (transactionType === 'Rent' || transactionType === 'Sell') 
             ? 'Upload 1-4 photos' 
             : 'Upload up to 10 photos'}
         </p>
@@ -191,7 +191,7 @@ const PostProperty = () => {
       {/* Transaction Type Buttons */}
       {propertyType && (
         <div className="flex flex-wrap gap-3 mb-4">
-          {propertyType === 'Residential' && ['Rent', 'Buy', 'PG/Hostel'].map((type) => (
+          {propertyType === 'Residential' && ['Rent', 'Sell', 'PG/Hostel'].map((type) => (
             <button
               key={type}
               type="button"
@@ -205,7 +205,7 @@ const PostProperty = () => {
               {type}
             </button>
           ))}
-          {propertyType === 'Commercial' && ['Rent', 'Buy'].map((type) => (
+          {propertyType === 'Commercial' && ['Rent', 'Sell'].map((type) => (
             <button
               key={type}
               type="button"
@@ -223,9 +223,9 @@ const PostProperty = () => {
             <button
               type="button"
               className="px-4 py-2 rounded-xl text-sm font-medium bg-indigo-600 text-white shadow-lg transform scale-105"
-              onClick={() => setTransactionType('Buy')}
+              onClick={() => setTransactionType('Sell')}
             >
-              Buy
+              Sell
             </button>
           )}
         </div>
@@ -243,8 +243,8 @@ const PostProperty = () => {
           Property Details
         </h2>
 
-        {/* Residential Rent/Buy */}
-        {propertyType === 'Residential' && (transactionType === 'Rent' || transactionType === 'Buy') && (
+        {/* Residential Rent/Sell */}
+        {propertyType === 'Residential' && (transactionType === 'Rent' || transactionType === 'Sell') && (
           <>
             <input
               type="text"
@@ -559,7 +559,7 @@ const PostProperty = () => {
         <h2 className="text-xl font-semibold mb-4 flex items-center">
           <span className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3 text-indigo-600 font-bold text-sm">4</span>
           {propertyType === 'Residential' && transactionType === 'Rent' && 'Rental Details'}
-          {propertyType === 'Residential' && transactionType === 'Buy' && 'Resale Details'}
+          {propertyType === 'Residential' && transactionType === 'Sell' && 'Resale Details'}
           {propertyType === 'Residential' && transactionType === 'PG/Hostel' && 'PG Details'}
           {propertyType === 'Commercial' && 'Rental Details'}
           {propertyType === 'Land/Plot' && 'Resale Details'}
@@ -649,8 +649,8 @@ const PostProperty = () => {
           </>
         )}
 
-        {/* Residential Buy */}
-        {propertyType === 'Residential' && transactionType === 'Buy' && (
+        {/* Residential Sell */}
+        {propertyType === 'Residential' && transactionType === 'Sell' && (
           <>
             <input
               type="text"
