@@ -1,6 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const PostProperty = () => {
+  const [enums, setEnums] = useState({
+    propertyCategory: [],
+    furnishedType: [],
+    bhkType: [],
+    propertyFor: [],
+    apartmentType: [],
+  });
+
+  useEffect(() => {
+    const fetchEnums = async () => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/properties/all_enum`);
+        setEnums(response.data);
+        console.log(response.data); // Check the fetched data
+      } catch (error) {
+        console.error('Error fetching enums:', error);
+      }
+    };
+    fetchEnums();
+  }, []);
+
+  const [selectedFiles, setSelectedFiles] = useState([]);
+
+
   // Basic state
   const [city, setCity] = useState('');
   const [propertyType, setPropertyType] = useState('');
@@ -49,9 +74,6 @@ const PostProperty = () => {
   const [boundaryWall, setBoundaryWall] = useState('');
 
   // Amenities
-  const [parking, setParking] = useState('');
-  const [bathrooms, setBathrooms] = useState('');
-  const [balconies, setBalconies] = useState('');
   const [amenities, setAmenities] = useState({
     gym: false,
     garden: false,
@@ -72,9 +94,7 @@ const PostProperty = () => {
     electricConnection: false,
   });
 
-  const cities = [ 
-    'Pune'
-  ];
+  const cities = ['Pune'];
 
   const handleAmenityChange = (amenity) => {
     setAmenities({
@@ -83,74 +103,176 @@ const PostProperty = () => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const formData = {
-      city,
-      propertyType,
-      subPropertyType,
-      transactionType,
-      propertyName,
-      apartmentType,
-      bhkType,
-      floor,
-      totalFloor,
-      propertyAge,
-      builtUpArea,
-      carpetArea,
-      area,
-      state,
-      pincode,
-      expectedRent,
-      expectedDeposit,
-      monthlyMaintenance,
-      availableFrom,
-      preferredTenants,
-      furnishing,
-      expectedPrice,
-      description,
-      roomType,
-      pgGender,
-      preferredGuests,
-      gateClosingTime,
-      buildingType,
-      floorType,
-      plotArea,
-      length,
-      width,
-      boundaryWall,
-      parking,
-      bathrooms,
-      balconies,
-      amenities,
-    };
-    console.log(formData);
-    alert('Property posted successfully!');
+  const handlePropertyTypeClick = (type) => {
+    setPropertyType(type);
+    setSubPropertyType('');
+    setTransactionType('');
+    console.log('Property Type:', type);
   };
 
-  const renderPropertyPhotos = () => (
-    <div className="mb-6">
-      <h2 className="text-xl font-semibold mb-4 flex items-center">
-        <span className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3 text-indigo-600 font-bold text-sm">1</span>
-        Property Photos
-      </h2>
-      <div className="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center">
-        <p className="mb-2">
-          {propertyType === 'Residential' && (transactionType === 'Rent' || transactionType === 'Sell') 
-            ? 'Upload 1-4 photos' 
-            : 'Upload up to 10 photos'}
-        </p>
-        <button type="button" className="bg-indigo-600 text-white px-4 py-2 rounded-xl hover:bg-indigo-700 transition-colors">
-          Upload Media
-        </button>
-      </div>
+  const handleTransactionTypeClick = (type) => {
+    setTransactionType(type);
+    console.log('Transaction Type:', type);
+  };
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   const formData = {
+  //     city,
+  //     propertyType,
+  //     subPropertyType,
+  //     transactionType,
+  //     propertyName,
+  //     apartmentType,
+  //     bhkType,
+  //     floor,
+  //     totalFloor,
+  //     propertyAge,
+  //     builtUpArea,
+  //     carpetArea,
+  //     area,
+  //     state,
+  //     pincode,
+  //     expectedRent,
+  //     expectedDeposit,
+  //     monthlyMaintenance,
+  //     availableFrom,
+  //     preferredTenants,
+  //     furnishing,
+  //     expectedPrice,
+  //     description,
+  //     roomType,
+  //     pgGender,
+  //     preferredGuests,
+  //     gateClosingTime,
+  //     buildingType,
+  //     floorType,
+  //     plotArea,
+  //     length,
+  //     width,
+  //     boundaryWall,
+  //     amenities,
+  //   };
+  //   console.log(formData);
+  //   alert('Property posted successfully!');
+  // };
+
+
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData();
+
+  // Append property data as a JSON string
+  const propertyData = {
+    city,
+    propertyType,
+    subPropertyType,
+    transactionType,
+    propertyName,
+    apartmentType,
+    bhkType,
+    floor,
+    totalFloor,
+    propertyAge,
+    builtUpArea,
+    carpetArea,
+    area,
+    state,
+    pincode,
+    expectedRent,
+    expectedDeposit,
+    monthlyMaintenance,
+    availableFrom,
+    preferredTenants,
+    furnishing,
+    expectedPrice,
+    description,
+    roomType,
+    pgGender,
+    preferredGuests,
+    gateClosingTime,
+    buildingType,
+    floorType,
+    plotArea,
+    length,
+    width,
+    boundaryWall,
+    amenities,
+  };
+
+  formData.append('property', JSON.stringify(propertyData));
+
+  // Append images
+  selectedFiles.forEach((file) => {
+    formData.append('images', file);
+  });
+
+  try {
+    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/properties/add`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    console.log('Property posted successfully:', response.data);
+    alert('Property posted successfully!');
+  } catch (error) {
+    console.error('Error posting property:', error);
+    alert('Error posting property. Please try again.');
+  }
+};
+
+
+  const handleFileChange = (event) => {
+  const files = Array.from(event.target.files);
+  setSelectedFiles(files);
+};
+
+const renderPropertyPhotos = () => (
+  <div className="mb-6">
+    <h2 className="text-xl font-semibold mb-4 flex items-center">
+      <span className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3 text-indigo-600 font-bold text-sm">1</span>
+      Property Photos
+    </h2>
+    <div className="border-2 border-dashed border-gray-300 rounded-xl p-4 text-center">
+      <p className="mb-2">
+        {propertyType === 'RESIDENTIAL' && (transactionType === 'RENT' || transactionType === 'SELL')
+          ? 'Upload 1-4 photos'
+          : 'Upload up to 10 photos'}
+      </p>
+      <input
+        type="file"
+        multiple
+        onChange={handleFileChange}
+        className="mb-4"
+      />
+      <button
+        type="button"
+        onClick={handleSubmit}
+        className="bg-indigo-600 text-white px-4 py-2 rounded-xl hover:bg-indigo-700 transition-colors"
+      >
+        Upload Media
+      </button>
+      {selectedFiles.length > 0 && (
+        <div className="mt-4">
+          <p>Selected Files:</p>
+          <ul>
+            {selectedFiles.map((file, index) => (
+              <li key={index}>{file.name}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
-  );
+  </div>
+);
+
 
   const renderBasicSelection = () => (
     <div className="mb-6">
       <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
-      
+
       {/* City Dropdown */}
       <div className="mb-4">
         <select
@@ -167,7 +289,7 @@ const PostProperty = () => {
 
       {/* Property Type Buttons */}
       <div className="flex flex-wrap gap-3 mb-4">
-        {['Residential', 'Commercial', 'Land/Plot'].map((type) => (
+        {enums.propertyCategory.map((type) => (
           <button
             key={type}
             type="button"
@@ -176,11 +298,7 @@ const PostProperty = () => {
                 ? 'bg-indigo-600 text-white shadow-lg transform scale-105'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
             }`}
-            onClick={() => {
-              setPropertyType(type);
-              setSubPropertyType('');
-              setTransactionType('');
-            }}
+            onClick={() => handlePropertyTypeClick(type)}
           >
             {type}
           </button>
@@ -190,50 +308,42 @@ const PostProperty = () => {
       {/* Transaction Type Buttons */}
       {propertyType && (
         <div className="flex flex-wrap gap-3 mb-4">
-          {propertyType === 'Residential' && ['Rent', 'Sell', 'PG/Hostel'].map((type) => (
-            <button
-              key={type}
-              type="button"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                transactionType === type
-                  ? 'bg-indigo-600 text-white shadow-lg transform scale-105'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
-              }`}
-              onClick={() => setTransactionType(type)}
-            >
-              {type}
-            </button>
-          ))}
-          {propertyType === 'Commercial' && ['Rent', 'Sell'].map((type) => (
-            <button
-              key={type}
-              type="button"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                transactionType === type
-                  ? 'bg-indigo-600 text-white shadow-lg transform scale-105'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
-              }`}
-              onClick={() => setTransactionType(type)}
-            >
-              {type}
-            </button>
-          ))}
-          {propertyType === 'Land/Plot' && (
-            <button
-              type="button"
-              className="px-4 py-2 rounded-xl text-sm font-medium bg-indigo-600 text-white shadow-lg transform scale-105"
-              onClick={() => setTransactionType('Sell')}
-            >
-              Sell
-            </button>
-          )}
+          {enums.propertyFor
+            .filter((type) => {
+              if (propertyType === 'RESIDENTIAL') {
+                return type === 'RENT' || type === 'SELL' || type === 'PG' || type === 'HOSTEL';
+              } else if (propertyType === 'COMMERCIAL') {
+                return type === 'RENT' || type === 'SELL';
+              } else if (propertyType === 'PLOT') {
+                return type === 'SELL' || type === 'RESELL';
+              }
+              return false;
+            })
+            .map((type) => (
+              <button
+                key={type}
+                type="button"
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  transactionType === type
+                    ? 'bg-indigo-600 text-white shadow-lg transform scale-105'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
+                }`}
+                onClick={() => handleTransactionTypeClick(type)}
+              >
+                {type}
+              </button>
+            ))}
         </div>
       )}
     </div>
   );
 
   const renderPropertyDetails = () => {
-    if (!propertyType || !transactionType) return null;
+    if (!propertyType || !transactionType) {
+      console.log('Property Type or Transaction Type not set');
+      return null;
+    }
+    console.log('Rendering Property Details for:', propertyType, transactionType);
 
     return (
       <div className="mb-6">
@@ -243,7 +353,7 @@ const PostProperty = () => {
         </h2>
 
         {/* Residential Rent/Sell */}
-        {propertyType === 'Residential' && (transactionType === 'Rent' || transactionType === 'Sell') && (
+        {propertyType === 'RESIDENTIAL' && (transactionType === 'RENT' || transactionType === 'SELL') && (
           <>
             <input
               type="text"
@@ -252,9 +362,9 @@ const PostProperty = () => {
               value={propertyName}
               onChange={(e) => setPropertyName(e.target.value)}
             />
-            
+
             <div className="flex flex-wrap gap-3 mb-3">
-              {['Apartment', 'Individual House/Villa'].map((type) => (
+              {enums.apartmentType.map((type) => (
                 <button
                   key={type}
                   type="button"
@@ -277,41 +387,32 @@ const PostProperty = () => {
                 onChange={(e) => setBhkType(e.target.value)}
               >
                 <option value="">BHK Type</option>
-                <option value="1BHK">1 BHK</option>
-                <option value="2BHK">2 BHK</option>
-                <option value="3BHK">3 BHK</option>
-                <option value="4BHK">4 BHK</option>
-                <option value="5BHK">5 BHK</option>
-              </select>
-              
-              <select
-                className="w-1/3 p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                value={floor}
-                onChange={(e) => setFloor(e.target.value)}
-              >
-                <option value="">Floor</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                {enums.bhkType.map((type) => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
               </select>
 
-              <select
-                className="w-1/3 p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                value={totalFloor}
-                onChange={(e) => setTotalFloor(e.target.value)}
-              >
-                <option value="">Total Floors</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-              </select>
+              <input
+  type="number"
+  className="w-1/3 p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+  placeholder="Floor"
+  value={floor}
+  onChange={(e) => setFloor(e.target.value)}
+  min={1}
+/>
+
+<input
+  type="number"
+  className="w-1/3 p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+  placeholder="Total Floors"
+  value={totalFloor}
+  onChange={(e) => setTotalFloor(e.target.value)}
+  min={1}
+/>
+
             </div>
 
-            <select
+            {/* <select
               className="w-full p-3 border border-gray-300 rounded-xl mb-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
               value={propertyAge}
               onChange={(e) => setPropertyAge(e.target.value)}
@@ -321,7 +422,7 @@ const PostProperty = () => {
               <option value="3-5">3 to 5 years</option>
               <option value="5-10">5 to 10 years</option>
               <option value=">10">More than 10 years</option>
-            </select>
+            </select> */}
 
             <div className="flex space-x-3 mb-3">
               <input
@@ -343,7 +444,7 @@ const PostProperty = () => {
         )}
 
         {/* PG/Hostel */}
-        {propertyType === 'Residential' && transactionType === 'PG/Hostel' && (
+        {propertyType === 'RESIDENTIAL' && (transactionType === 'PG' || transactionType === 'HOSTEL') && (
           <>
             <input
               type="text"
@@ -385,7 +486,7 @@ const PostProperty = () => {
         )}
 
         {/* Commercial */}
-        {propertyType === 'Commercial' && (
+        {propertyType === 'COMMERCIAL' && (
           <>
             <div className="flex flex-wrap gap-2 mb-3">
               {['Office Space', 'Shop', 'Showroom', 'Godown', 'Industrial Building', 'Other'].map((type) => (
@@ -463,7 +564,7 @@ const PostProperty = () => {
         )}
 
         {/* Land/Plot */}
-        {propertyType === 'Land/Plot' && (
+        {propertyType === 'PLOT' && (
           <>
             <input
               type="text"
@@ -513,7 +614,11 @@ const PostProperty = () => {
   };
 
   const renderLocationDetails = () => {
-    if (!propertyType || !transactionType) return null;
+    if (!propertyType || !transactionType) {
+      console.log('Property Type or Transaction Type not set');
+      return null;
+    }
+    console.log('Rendering Location Details for:', propertyType, transactionType);
 
     return (
       <div className="mb-6">
@@ -551,24 +656,28 @@ const PostProperty = () => {
   };
 
   const renderPricingDetails = () => {
-    if (!propertyType || !transactionType) return null;
+    if (!propertyType || !transactionType) {
+      console.log('Pricing Details not rendered. Property Type:', propertyType, 'Transaction Type:', transactionType);
+      return null;
+    }
+    console.log('Rendering Pricing Details for:', propertyType, transactionType);
 
     return (
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-4 flex items-center">
           <span className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3 text-indigo-600 font-bold text-sm">4</span>
-          {propertyType === 'Residential' && transactionType === 'Rent' && 'Rental Details'}
-          {propertyType === 'Residential' && transactionType === 'Sell' && 'Resale Details'}
-          {propertyType === 'Residential' && transactionType === 'PG/Hostel' && 'PG Details'}
-          {propertyType === 'Commercial' && 'Rental Details'}
-          {propertyType === 'Land/Plot' && 'Resale Details'}
+          {propertyType === 'RESIDENTIAL' && transactionType === 'RENT' && 'Rental Details'}
+          {propertyType === 'RESIDENTIAL' && transactionType === 'SELL' && 'Resale Details'}
+          {propertyType === 'RESIDENTIAL' && (transactionType === 'PG' || transactionType === 'HOSTEL') && 'PG Details'}
+          {propertyType === 'COMMERCIAL' && 'Rental Details'}
+          {propertyType === 'PLOT' && 'Resale Details'}
         </h2>
 
         {/* Residential Rent */}
-        {propertyType === 'Residential' && transactionType === 'Rent' && (
+        {propertyType === 'RESIDENTIAL' && transactionType === 'RENT' && (
           <>
             <p className="text-gray-600 mb-3">Property Available for rent/lease</p>
-            
+
             <div className="flex space-x-3 mb-3">
               <input
                 type="text"
@@ -622,7 +731,7 @@ const PostProperty = () => {
 
             <div className="flex flex-wrap gap-2 mb-3">
               <span className="text-sm text-gray-600 w-full mb-2">Furnishing:</span>
-              {['Fully', 'Semi', 'Un'].map((furnish) => (
+              {enums.furnishedType.map((furnish) => (
                 <button
                   key={furnish}
                   type="button"
@@ -649,7 +758,7 @@ const PostProperty = () => {
         )}
 
         {/* Residential Sell */}
-        {propertyType === 'Residential' && transactionType === 'Sell' && (
+        {propertyType === 'RESIDENTIAL' && transactionType === 'SELL' && (
           <>
             <input
               type="text"
@@ -678,7 +787,7 @@ const PostProperty = () => {
         )}
 
         {/* PG/Hostel */}
-        {propertyType === 'Residential' && transactionType === 'PG/Hostel' && (
+        {propertyType === 'RESIDENTIAL' && (transactionType === 'PG' || transactionType === 'HOSTEL') && (
           <>
             <div className="flex space-x-3 mb-3">
               <input
@@ -696,7 +805,8 @@ const PostProperty = () => {
                 onChange={(e) => setExpectedDeposit(e.target.value)}
               />
             </div>
-                        <div className="flex flex-wrap gap-2 mb-3">
+
+            <div className="flex flex-wrap gap-2 mb-3">
               <span className="text-sm text-gray-600 w-full mb-2">Amenities:</span>
               {['TV', 'AC', 'Geyser', 'Cupboard', 'Attached Bathroom'].map((amenity) => (
                 <button
@@ -713,6 +823,7 @@ const PostProperty = () => {
                 </button>
               ))}
             </div>
+
             <div className="flex flex-wrap gap-2 mb-3">
               <span className="text-sm text-gray-600 w-full mb-2">PG Details:</span>
               {['Male', 'Female', 'Others'].map((gender) => (
@@ -730,6 +841,7 @@ const PostProperty = () => {
                 </button>
               ))}
             </div>
+
             <div className="flex flex-wrap gap-2 mb-3">
               <span className="text-sm text-gray-600 w-full mb-2">Preferred Guests:</span>
               {['Working', 'Student', 'Both'].map((guest) => (
@@ -747,6 +859,7 @@ const PostProperty = () => {
                 </button>
               ))}
             </div>
+
             <input
               type="date"
               placeholder="Available From"
@@ -754,6 +867,7 @@ const PostProperty = () => {
               value={availableFrom}
               onChange={(e) => setAvailableFrom(e.target.value)}
             />
+
             <input
               type="time"
               placeholder="Gate Closing Time"
@@ -763,8 +877,9 @@ const PostProperty = () => {
             />
           </>
         )}
+
         {/* Commercial */}
-        {propertyType === 'Commercial' && (
+        {propertyType === 'COMMERCIAL' && (
           <>
             <div className="flex space-x-3 mb-3">
               <input
@@ -782,6 +897,7 @@ const PostProperty = () => {
                 onChange={(e) => setExpectedDeposit(e.target.value)}
               />
             </div>
+
             <input
               type="date"
               placeholder="Available From"
@@ -789,6 +905,7 @@ const PostProperty = () => {
               value={availableFrom}
               onChange={(e) => setAvailableFrom(e.target.value)}
             />
+
             <div className="flex flex-wrap gap-2 mb-3">
               <span className="text-sm text-gray-600 w-full mb-2">Amenities:</span>
               {['Power Backup', 'Lift', 'Parking', 'Washroom', 'Security', 'Wifi'].map((amenity) => (
@@ -808,8 +925,9 @@ const PostProperty = () => {
             </div>
           </>
         )}
+
         {/* Land/Plot */}
-        {propertyType === 'Land/Plot' && (
+        {propertyType === 'PLOT' && (
           <>
             <input
               type="text"
@@ -818,6 +936,7 @@ const PostProperty = () => {
               value={expectedPrice}
               onChange={(e) => setExpectedPrice(e.target.value)}
             />
+
             <input
               type="date"
               placeholder="Available From"
@@ -825,6 +944,7 @@ const PostProperty = () => {
               value={availableFrom}
               onChange={(e) => setAvailableFrom(e.target.value)}
             />
+
             <textarea
               placeholder="Description"
               className="w-full p-3 border border-gray-300 rounded-xl mb-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
@@ -832,6 +952,7 @@ const PostProperty = () => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
+
             <div className="flex flex-wrap gap-2 mb-3">
               <span className="text-sm text-gray-600 w-full mb-2">Amenities:</span>
               {['Water Supply', 'Electric Connection'].map((amenity) => (
@@ -857,6 +978,7 @@ const PostProperty = () => {
 
   const renderAmenities = () => {
     if (!propertyType || !transactionType) return null;
+
     return (
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-4 flex items-center">

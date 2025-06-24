@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Check, Star, Users, Briefcase, X, Zap, Shield, TrendingUp, ArrowRight, ChevronDown, ChevronUp, Gift, Clock, Phone, Mail, MessageCircle } from 'lucide-react';
+import { Check, Star, Users, Briefcase, X, Zap, Shield, TrendingUp, ArrowRight, ChevronDown, ChevronUp, Gift, Clock, Phone, Mail, MessageCircle, CreditCard, Lock, ArrowLeft } from 'lucide-react';
 
 const Subscription = () => {
   const [showUserPlans, setShowUserPlans] = useState(true);
@@ -9,6 +9,14 @@ const Subscription = () => {
   const [showFAQ, setShowFAQ] = useState(false);
   const [openFAQ, setOpenFAQ] = useState(null);
   const [animateCards, setAnimateCards] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [checkoutData, setCheckoutData] = useState({
+    email: '',
+    name: '',
+    phone: '',
+    paymentMethod: 'card'
+  });
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -40,7 +48,8 @@ const Subscription = () => {
       popular: false,
       color: 'from-blue-500 to-blue-600',
       icon: <TrendingUp size={24} className="text-white" />,
-      savings: null
+      savings: null,
+      planId: 'starter_user'
     },
     {
       name: 'Smart',
@@ -57,7 +66,8 @@ const Subscription = () => {
       popular: true,
       color: 'from-purple-500 to-purple-600',
       icon: <Zap size={24} className="text-white" />,
-      savings: null
+      savings: null,
+      planId: 'smart_user'
     },
     {
       name: 'Premium',
@@ -74,7 +84,8 @@ const Subscription = () => {
       popular: false,
       color: 'from-emerald-500 to-emerald-600',
       icon: <Shield size={24} className="text-white" />,
-      savings: null
+      savings: null,
+      planId: 'premium_user'
     }
   ];
 
@@ -94,7 +105,8 @@ const Subscription = () => {
       popular: false,
       color: 'from-orange-500 to-orange-600',
       icon: <Users size={24} className="text-white" />,
-      savings: null
+      savings: null,
+      planId: 'basic_broker'
     },
     {
       name: 'Pro',
@@ -111,7 +123,8 @@ const Subscription = () => {
       popular: true,
       color: 'from-red-500 to-red-600',
       icon: <Briefcase size={24} className="text-white" />,
-      savings: null
+      savings: null,
+      planId: 'pro_broker'
     },
     {
       name: 'Elite',
@@ -128,7 +141,8 @@ const Subscription = () => {
       popular: false,
       color: 'from-indigo-500 to-indigo-600',
       icon: <Shield size={24} className="text-white" />,
-      savings: null
+      savings: null,
+      planId: 'elite_broker'
     }
   ];
 
@@ -179,11 +193,229 @@ const Subscription = () => {
 
   const handlePlanSelect = (plan) => {
     setSelectedPlan(plan);
-    // Simulate plan selection animation
-    setTimeout(() => {
-      alert(`Great choice! You've selected the ${plan.name} plan for ${plan.price}${plan.period}. Redirecting to checkout...`);
+    setShowCheckout(true);
+  };
+
+  const handleCheckoutSubmit = async (e) => {
+    e.preventDefault();
+    setIsProcessing(true);
+    
+    // Simulate API call
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Here you would typically:
+      // 1. Create order in your backend
+      // 2. Initialize payment gateway (Razorpay, Stripe, etc.)
+      // 3. Handle payment success/failure
+      
+      alert(`Payment successful! Welcome to ${selectedPlan.name} plan!`);
+      setShowCheckout(false);
       setSelectedPlan(null);
-    }, 1000);
+      setCheckoutData({ email: '', name: '', phone: '', paymentMethod: 'card' });
+    } catch (error) {
+      alert('Payment failed. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleInputChange = (field, value) => {
+    setCheckoutData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const CheckoutModal = () => {
+    if (!showCheckout || !selectedPlan) return null;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+          {/* Header */}
+          <div className="p-6 border-b border-gray-200">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-gray-900">Checkout</h2>
+              <button
+                onClick={() => setShowCheckout(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <X size={20} className="text-gray-500" />
+              </button>
+            </div>
+          </div>
+
+          {/* Selected Plan Summary */}
+          <div className="p-6 bg-gray-50">
+            <div className="flex items-center gap-4">
+              <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${selectedPlan.color} flex items-center justify-center`}>
+                {selectedPlan.icon}
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-gray-900">{selectedPlan.name} Plan</h3>
+                <p className="text-sm text-gray-600">{selectedPlan.description}</p>
+              </div>
+              <div className="text-right">
+                <div className="text-2xl font-bold text-gray-900">{selectedPlan.price}</div>
+                <div className="text-sm text-gray-600">{selectedPlan.period}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Checkout Form */}
+          <form onSubmit={handleCheckoutSubmit} className="p-6">
+            <div className="space-y-4">
+              {/* Contact Information */}
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-3">Contact Information</h4>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={checkoutData.name}
+                      onChange={(e) => handleInputChange('name', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Enter your full name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={checkoutData.email}
+                      onChange={(e) => handleInputChange('email', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Enter your email"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Phone Number *
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={checkoutData.phone}
+                      onChange={(e) => handleInputChange('phone', e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Enter your phone number"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment Method */}
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-3">Payment Method</h4>
+                <div className="space-y-2">
+                  <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="card"
+                      checked={checkoutData.paymentMethod === 'card'}
+                      onChange={(e) => handleInputChange('paymentMethod', e.target.value)}
+                      className="text-blue-600"
+                    />
+                    <CreditCard size={20} className="text-gray-600" />
+                    <span className="font-medium">Credit/Debit Card</span>
+                  </label>
+                  <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="upi"
+                      checked={checkoutData.paymentMethod === 'upi'}
+                      onChange={(e) => handleInputChange('paymentMethod', e.target.value)}
+                      className="text-blue-600"
+                    />
+                    <div className="w-5 h-5 bg-orange-500 rounded text-white text-xs flex items-center justify-center font-bold">
+                      U
+                    </div>
+                    <span className="font-medium">UPI</span>
+                  </label>
+                  <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="netbanking"
+                      checked={checkoutData.paymentMethod === 'netbanking'}
+                      onChange={(e) => handleInputChange('paymentMethod', e.target.value)}
+                      className="text-blue-600"
+                    />
+                    <div className="w-5 h-5 bg-blue-500 rounded text-white text-xs flex items-center justify-center font-bold">
+                      NB
+                    </div>
+                    <span className="font-medium">Net Banking</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Order Summary */}
+              <div className="border-t pt-4">
+                <h4 className="font-semibold text-gray-900 mb-3">Order Summary</h4>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Plan Cost</span>
+                    <span className="font-medium">{selectedPlan.price}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">GST (18%)</span>
+                    <span className="font-medium">₹{Math.round(parseInt(selectedPlan.price.replace('₹', '').replace(',', '')) * 0.18)}</span>
+                  </div>
+                  <div className="border-t pt-2 flex justify-between text-lg font-bold">
+                    <span>Total Amount</span>
+                    <span>₹{parseInt(selectedPlan.price.replace('₹', '').replace(',', '')) + Math.round(parseInt(selectedPlan.price.replace('₹', '').replace(',', '')) * 0.18)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Security Notice */}
+            <div className="flex items-center gap-2 bg-green-50 p-3 rounded-lg mt-6">
+              <Lock size={16} className="text-green-600" />
+              <span className="text-sm text-green-700">
+                Your payment information is secure and encrypted
+              </span>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 mt-6">
+              <button
+                type="button"
+                onClick={() => setShowCheckout(false)}
+                className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+              >
+                <ArrowLeft size={16} className="inline mr-2" />
+                Back
+              </button>
+              <button
+                type="submit"
+                disabled={isProcessing}
+                className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isProcessing ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Processing...
+                  </div>
+                ) : (
+                  `Pay ₹${parseInt(selectedPlan.price.replace('₹', '').replace(',', '')) + Math.round(parseInt(selectedPlan.price.replace('₹', '').replace(',', '')) * 0.18)}`
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -252,9 +484,7 @@ const Subscription = () => {
               key={plan.name}
               className={`relative bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden transition-all duration-500 hover:scale-105 hover:shadow-2xl ${
                 plan.popular ? 'ring-2 ring-purple-500 ring-opacity-50 transform scale-105' : ''
-              } ${animateCards ? 'animate-fadeInUp' : 'opacity-0'} ${
-                selectedPlan?.name === plan.name ? 'ring-4 ring-blue-500 ring-opacity-70' : ''
-              }`}
+              } ${animateCards ? 'animate-fadeInUp' : 'opacity-0'}`}
               style={{ animationDelay: `${index * 100}ms` }}
             >
               {plan.popular && (
@@ -297,12 +527,9 @@ const Subscription = () => {
                 <div className="space-y-3">
                   <button 
                     onClick={() => handlePlanSelect(plan)}
-                    disabled={selectedPlan?.name === plan.name}
-                    className={`w-full py-4 px-6 rounded-xl font-semibold text-white transition-all duration-300 transform hover:scale-105 bg-gradient-to-r ${plan.color} hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-opacity-30 disabled:opacity-70 disabled:cursor-not-allowed ${
-                      selectedPlan?.name === plan.name ? 'animate-pulse' : ''
-                    }`}
+                    className={`w-full py-4 px-6 rounded-xl font-semibold text-white transition-all duration-300 transform hover:scale-105 bg-gradient-to-r ${plan.color} hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-opacity-30`}
                   >
-                    {selectedPlan?.name === plan.name ? 'Processing...' : 'Get Started'}
+                    Select Plan
                   </button>
                   <button className="w-full py-3 px-6 rounded-xl font-medium text-gray-700 border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-300">
                     Start Free Trial
@@ -464,6 +691,9 @@ const Subscription = () => {
           </div>
         </div>
       </div>
+
+      {/* Checkout Modal */}
+      <CheckoutModal />
 
       <style jsx>{`
         @keyframes fadeInUp {
