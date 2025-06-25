@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Shield, Eye, EyeOff, User, CheckCircle } from 'lucide-react';
 import { AuthContext } from '../context/Authcontext';
+import { useLocation,useNavigate } from 'react-router-dom';
 
 const Signin = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -69,62 +70,64 @@ const Signin = () => {
   // In your Signin.js, update the handleSubmit function:
 
 const handleSubmit = async () => {
-  setErrors({});
+    setErrors({});
 
-  if (!otp) {
-    setErrors({ otp: 'OTP is required' });
-    return;
-  }
-
-  if (otp.length !== 4) {
-    setErrors({ otp: 'OTP must be 4 digits' });
-    return;
-  }
-
-  setIsLoading(true);
-
-  try {
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/auth/verify-login-otp`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        phoneNumber: `${phoneNumber}`,
-        otp: otp,
-      }),
-    });
-
-    if (response.ok) {
-  const data = await response.json();
-  console.log('API Response:', data);
-
-  if (data.token) {
-    const userData = data.user; // Use full DTO directly
-    console.log('✅ Full UserDTO:', userData);
-
-    if (userData) {
-      login(data.token, userData);
-    } else {
-      console.error('❌ No user data found in response');
-      setErrors({ otp: 'Login successful but user data not found. Please try again.' });
+    if (!otp) {
+      setErrors({ otp: 'OTP is required' });
+      return;
     }
-  } else {
-    console.error('❌ No token in response');
-    setErrors({ otp: 'Invalid response from server' });
-  }
-}
- else {
-      const errorData = await response.json();
-      setErrors({ otp: errorData.message || 'Invalid OTP' });
+
+    if (otp.length !== 4) {
+      setErrors({ otp: 'OTP must be 4 digits' });
+      return;
     }
-  } catch (error) {
-    console.error('Network error:', error);
-    setErrors({ otp: 'Network error. Please try again.' });
-  } finally {
-    setIsLoading(false);
-  }
-};
+
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/auth/verify-login-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phoneNumber: `${phoneNumber}`,
+          otp: otp,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('API Response:', data);
+
+        if (data.token) {
+          const userData = data.user;
+          console.log('✅ Full UserDTO:', userData);
+
+          if (userData) {
+            login(data.token, userData);
+            // Redirect to the stored location or default to the subscription page
+            const from = location.state?.from || '/subscription';
+            navigate(from);
+          } else {
+            console.error('❌ No user data found in response');
+            setErrors({ otp: 'Login successful but user data not found. Please try again.' });
+          }
+        } else {
+          console.error('❌ No token in response');
+          setErrors({ otp: 'Invalid response from server' });
+        }
+      } else {
+        const errorData = await response.json();
+        setErrors({ otp: errorData.message || 'Invalid OTP' });
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      setErrors({ otp: 'Network error. Please try again.' });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const formatPhoneNumber = (value) => {
     const digits = value.replace(/\D/g, '');

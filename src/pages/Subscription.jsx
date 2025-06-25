@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Check, Star, Users, Briefcase, X, Zap, Shield, TrendingUp, ArrowRight, ChevronDown, ChevronUp, Gift, Clock, Phone, Mail, MessageCircle, CreditCard, Lock, ArrowLeft } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+
 
 const Subscription = () => {
   const [showUserPlans, setShowUserPlans] = useState(true);
@@ -191,11 +193,12 @@ const Subscription = () => {
   //   navigate('/checkout', { state: { selectedPlan: plan } });
   // };
 
-  const handlePlanSelect = (plan) => {
-  // Check if the user is logged in
+const location = useLocation();
+
+const handlePlanSelect = (plan) => {
   if (!isLoggedIn()) {
-    // If not logged in, redirect to the login page
-    navigate('/signin');
+    // Store the current path in the state and redirect to the sign-in page
+    navigate('/signin', { state: { from: location.pathname } });
     return;
   }
 
@@ -211,12 +214,13 @@ const Subscription = () => {
     color: plan.color,
     savings: plan.savings,
     planId: plan.planId
-    // Exclude the icon property as it contains a React element
   };
 
   // Navigate to the checkout page with the serializable plan object
   navigate('/checkout', { state: { selectedPlan: serializablePlan } });
 };
+
+
 
 // Example function to check if the user is logged in
 const isLoggedIn = () => {
@@ -249,9 +253,9 @@ const isLoggedIn = () => {
             >
               View Plans
             </button>
-            <button className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300">
+            {/* <button className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300">
               Start Free Trial
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -339,9 +343,9 @@ const isLoggedIn = () => {
                   >
                     Select Plan
                   </button>
-                  <button className="w-full py-3 px-6 rounded-xl font-medium text-gray-700 border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-300">
+                  {/* <button className="w-full py-3 px-6 rounded-xl font-medium text-gray-700 border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-all duration-300">
                     Start Free Trial
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>
@@ -489,10 +493,10 @@ const isLoggedIn = () => {
             Join thousands of successful investors and brokers who trust our platform
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl">
+            {/* <button className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl">
               Start Free Trial
               <ArrowRight size={20} />
-            </button>
+            </button> */}
             <button className="px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:border-gray-400 hover:bg-gray-50 transition-all duration-300">
               View Demo
             </button>
