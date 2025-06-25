@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Star, Phone, MessageCircle, Share2, MapPin, Home, Building, Users, Heart, Filter, Menu, X,ChevronLeft,ChevronRight,Calendar    } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const HomePage = () => {
   const [activeTab, setActiveTab] = useState('Buy');
@@ -388,21 +389,36 @@ const HomePage = () => {
                   </div>
                 </div>
                 <div className="p-3 md:p-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-semibold text-sm md:text-lg text-gray-800 flex-1">{property.title}</h3>
-                    <span className="text-blue-600 font-bold text-sm md:text-base ml-2">{property.price}</span>
-                  </div>
-                  <div className="flex items-center text-gray-500 mb-2">
-                    <MapPin className="w-3 h-3 md:w-4 md:h-4 mr-1 flex-shrink-0" />
-                    <p className="text-xs md:text-sm truncate">{property.location}</p>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-600 text-xs md:text-sm">{property.area}</span>
-                    <button className="bg-blue-500 text-white px-3 md:px-4 py-1.5 md:py-2 rounded-md font-medium hover:bg-blue-600 transition-colors text-xs md:text-sm">
-                      View Details
-                    </button>
-                  </div>
-                </div>
+  {/* Title and Price */}
+  <div className="flex justify-between items-start mb-2">
+    <h3 className="font-semibold text-sm md:text-lg text-gray-800 flex-1 truncate">
+      {property.title}
+    </h3>
+    <span className="text-blue-600 font-bold text-sm md:text-base ml-2 whitespace-nowrap">
+      {property.price}
+    </span>
+  </div>
+
+  {/* Location */}
+  <div className="flex items-center text-gray-500 mb-2">
+    <MapPin className="w-3 h-3 md:w-4 md:h-4 mr-1 flex-shrink-0" />
+    <p className="text-xs md:text-sm truncate">{property.location}</p>
+  </div>
+
+  {/* Area */}
+  <div className="text-gray-600 text-xs md:text-sm mb-3">
+    {property.area}
+  </div>
+
+  {/* View Details Button */}
+  <Link
+    to={`/property/${property.id}`}  // change from hardcoded '1' to dynamic id
+    className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors block text-center text-sm md:text-base"
+  >
+    View Details
+  </Link>
+</div>
+
               </div>
             ))}
           </div>
@@ -508,15 +524,15 @@ const HomePage = () => {
 
           {/* Slide Counter & Auto-play Indicator */}
           <div className="flex items-center justify-center space-x-4 mt-2">
-            <div className="text-sm text-gray-500">
+            {/* <div className="text-sm text-gray-500">
               {currentSlide + 1} of {projects.length}
-            </div>
-            <div className="flex items-center space-x-1">
+            </div> */}
+            {/* <div className="flex items-center space-x-1">
               <div className={`w-2 h-2 rounded-full ${isAutoPlaying ? 'bg-green-400' : 'bg-gray-400'}`}></div>
               <span className="text-xs text-gray-400">
                 {isAutoPlaying ? 'Auto' : 'Manual'}
               </span>
-            </div>
+            </div> */}
           </div>
 
           {/* Project Navigation Thumbnails */}
@@ -551,15 +567,15 @@ const HomePage = () => {
         <div className="w-full px-3 md:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-4xl mx-auto">
             <div className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-blue-600">NA +</div>
+              <div className="text-2xl md:text-3xl font-bold text-blue-600">100 +</div>
               <div className="text-gray-600 text-sm md:text-base">Properties</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-blue-600">NA +</div>
+              <div className="text-2xl md:text-3xl font-bold text-blue-600">1000 +</div>
               <div className="text-gray-600 text-sm md:text-base">Happy Clients</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-blue-600">NA +</div>
+              <div className="text-2xl md:text-3xl font-bold text-blue-600">20 +</div>
               <div className="text-gray-600 text-sm md:text-base">Locations</div>
             </div>
             <div className="text-center">

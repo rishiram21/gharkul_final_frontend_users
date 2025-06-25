@@ -20,52 +20,57 @@ const Signin = () => {
   };
 
   const sendOTP = async () => {
-    setErrors({});
+  setErrors({});
 
-    if (!phoneNumber) {
-      setErrors({ phone: 'Phone number is required' });
-      return;
-    }
+  if (!phoneNumber) {
+    setErrors({ phone: 'Phone number is required' });
+    return;
+  }
 
-    if (!validatePhoneNumber(phoneNumber)) {
-      setErrors({ phone: 'Please enter a valid 10-digit mobile number' });
-      return;
-    }
+  if (!validatePhoneNumber(phoneNumber)) {
+    setErrors({ phone: 'Please enter a valid 10-digit mobile number' });
+    return;
+  }
 
-    setIsLoading(true);
+  setIsLoading(true);
 
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/auth/send-login-otp`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ phoneNumber }),
-      });
+  try {
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/auth/send-login-otp`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ phoneNumber }),
+    });
 
-      if (response.ok) {
-        setIsOtpSent(true);
-        setCountdown(30);
+    if (response.ok) {
+      setIsOtpSent(true);
+      setCountdown(30);
 
-        const timer = setInterval(() => {
-          setCountdown((prev) => {
-            if (prev <= 1) {
-              clearInterval(timer);
-              return 0;
-            }
-            return prev - 1;
-          });
-        }, 1000);
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else {
+      const errorData = await response.json();
+      if (errorData.message?.toLowerCase().includes('not registered')) {
+        setErrors({ phone: 'This number is not registered. Please register first.' });
       } else {
-        const errorData = await response.json();
-        setErrors({ phone: errorData.message || 'Failed to send OTP' });
+        setErrors({ phone: errorData.message || 'This number is not registered. Please register first' });
       }
-    } catch (error) {
-      setErrors({ phone: 'Network error. Please try again.' });
-    } finally {
-      setIsLoading(false);
     }
-  };
+  } catch (error) {
+    setErrors({ phone: 'Network error. Please try again.' });
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   // In your Signin.js, update the handleSubmit function:
 
