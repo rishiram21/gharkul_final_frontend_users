@@ -17,6 +17,7 @@ import Propertydetails from './subpages/Propertydetails';
 import Subscription from './pages/Subscription';
 import UserProfile from './pages/UserProfile';
 import CheckoutPage from './pages/CheckoutPage';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = React.useContext(AuthContext);
@@ -41,6 +42,7 @@ function App() {
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/about" element={<Aboutus />} />
               <Route path="/contact" element={<Contactus />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/signin" element={<Signin />} />
               <Route path="/signup" element={<Signup />} />
 

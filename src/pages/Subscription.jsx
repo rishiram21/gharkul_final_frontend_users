@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Check, Star, Users, Briefcase, X, Zap, Shield, TrendingUp, ArrowRight, ChevronDown, ChevronUp, Gift, Clock, Phone, Mail, MessageCircle, CreditCard, Lock, ArrowLeft } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 
-
 const Subscription = () => {
   const [showUserPlans, setShowUserPlans] = useState(true);
   const [isAnnual, setIsAnnual] = useState(false);
@@ -236,10 +235,10 @@ const isLoggedIn = () => {
       <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white py-8">
         <div className="absolute inset-0 bg-black opacity-10"></div>
         <div className="relative max-w-7xl mx-auto px-4 text-center">
-          <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+          {/* <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
             <Gift size={16} />
             <span className="text-sm font-medium">Limited Time: 2 months free on annual plans!</span>
-          </div>
+          </div> */}
           <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
             Supercharge Your Investment Journey
           </h1>
@@ -263,7 +262,7 @@ const isLoggedIn = () => {
       <div className="max-w-7xl mx-auto px-4 py-16" id="plans">
         {/* Plan Toggle */}
         <div className="flex justify-center mb-12">
-          <div className="bg-white rounded-full p-1 shadow-lg border border-gray-200">
+          <div className="bg-white rounded-lg p-1 shadow-lg border border-gray-200">
             <button
               onClick={() => togglePlans(true)}
               className={`flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
@@ -273,7 +272,7 @@ const isLoggedIn = () => {
               }`}
             >
               <Users size={20} />
-              User Subscription
+              Owner Subscription
             </button>
             <button
               onClick={() => togglePlans(false)}
@@ -462,32 +461,48 @@ const isLoggedIn = () => {
 
         {/* Contact & Support */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-8 md:p-12 text-white text-center mb-16">
-          <h2 className="text-3xl font-bold mb-6">Need Help Choosing?</h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Our expert team is here to help you find the perfect plan for your needs
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="inline-flex items-center gap-2 bg-white text-blue-600 px-6 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-all duration-300">
-              <Phone size={20} />
-              Schedule Call
-            </button>
-            <button className="inline-flex items-center gap-2 border-2 border-white text-white px-6 py-3 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300">
-              <MessageCircle size={20} />
-              Live Chat
-            </button>
-            <button className="inline-flex items-center gap-2 border-2 border-white text-white px-6 py-3 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300">
-              <Mail size={20} />
-              Email Support
-            </button>
-          </div>
-        </div>
+  <h2 className="text-3xl font-bold mb-6">Need Help Choosing?</h2>
+  <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+    Our expert team is here to help you find the perfect plan for your needs
+  </p>
+  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+    {/* Call Button */}
+    <a
+      href="tel:+919632748927"
+      className="inline-flex items-center gap-2 bg-white text-blue-600 px-6 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-all duration-300"
+    >
+      <Phone size={20} />
+      Call Now
+    </a>
+
+    {/* WhatsApp Chat Button */}
+    <a
+      href="https://wa.me/919632748927"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-2 border-2 border-white text-white px-6 py-3 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300"
+    >
+      <MessageCircle size={20} />
+      WhatsApp Chat
+    </a>
+
+    {/* Email Support Button */}
+    <a
+      href="mailto:gharkul@gmail.com"
+      className="inline-flex items-center gap-2 border-2 border-white text-white px-6 py-3 rounded-xl font-semibold hover:bg-white hover:text-blue-600 transition-all duration-300"
+    >
+      <Mail size={20} />
+      Email Support
+    </a>
+  </div>
+</div>
 
         {/* Bottom CTA */}
         <div className="text-center">
-          <div className="inline-flex items-center gap-2 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+          {/* <div className="inline-flex items-center gap-2 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full text-sm font-semibold mb-6">
             <Clock size={16} />
             Limited Time Offer - 2 Months Free!
-          </div>
+          </div> */}
           <h2 className="text-3xl font-bold text-gray-900 mb-4">Ready to Get Started?</h2>
           <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
             Join thousands of successful investors and brokers who trust our platform
@@ -497,9 +512,9 @@ const isLoggedIn = () => {
               Start Free Trial
               <ArrowRight size={20} />
             </button> */}
-            <button className="px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:border-gray-400 hover:bg-gray-50 transition-all duration-300">
+            {/* <button className="px-8 py-4 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:border-gray-400 hover:bg-gray-50 transition-all duration-300">
               View Demo
-            </button>
+            </button> */}
           </div>
         </div>
       </div>

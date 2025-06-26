@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Phone, Shield, Eye, EyeOff, User, CheckCircle } from 'lucide-react';
 import { AuthContext } from '../context/Authcontext';
 import { useLocation,useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const Signin = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -13,6 +14,10 @@ const Signin = () => {
   const [showOtp, setShowOtp] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const { login } = useContext(AuthContext);
+
+  useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
 
   const validatePhoneNumber = (phone) => {
     const phoneRegex = /^[6-9]\d{9}$/;

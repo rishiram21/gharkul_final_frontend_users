@@ -11,6 +11,7 @@ import {
   Building,
 } from "lucide-react";
 import axios from "axios";
+import { useEffect } from "react";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -35,6 +36,10 @@ const Signup = () => {
   const [errors, setErrors] = useState({});
   const [showOtp, setShowOtp] = useState(false);
   const [countdown, setCountdown] = useState(0);
+
+  useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
 
   // Validate phone number (Indian format)
   const validatePhoneNumber = (phone) => {
@@ -250,7 +255,7 @@ const Signup = () => {
                   }`}
                 >
                   <User className="w-4 h-4" />
-                  User
+                  Owner
                 </button>
                 <button
                   type="button"

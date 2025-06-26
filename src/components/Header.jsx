@@ -14,7 +14,7 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row justify-between items-center py-3 space-y-3 sm:space-y-0">
           {/* Contact Info */}
-          <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6 text-sm text-purple-700">
+          <div className="w-full flex justify-between text-sm text-purple-700">
             <div className="flex items-center space-x-2">
               <Phone className="h-4 w-4 text-purple-600" />
               <span className="font-medium">+91 96327 48927</span>

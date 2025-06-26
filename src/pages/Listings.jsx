@@ -18,6 +18,10 @@ const Listings = () => {
   ];
 
   useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
+
+  useEffect(() => {
     const fetchProperties = async () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/properties/get`, {
