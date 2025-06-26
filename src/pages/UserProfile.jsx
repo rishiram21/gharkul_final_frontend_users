@@ -150,10 +150,10 @@ const UserProfile = () => {
       <p className="text-sm text-gray-500">Phone Number</p>
       <p className="font-medium">{formatPhoneNumber(getUserData('phoneNumber'))}</p>
     </div>
-    <div>
+    {/* <div>
       <p className="text-sm text-gray-500">User Role</p>
       <p className="font-medium">{getUserData('userRole')}</p>
-    </div>
+    </div> */}
     {getUserData('userRole') === 'BROKER' && (
   <>
     <div>
