@@ -263,7 +263,7 @@ const PostProperty = () => {
     <div className="mb-6">
       <h2 className="text-xl font-semibold mb-4 flex items-center">
         <span className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3 text-indigo-600 font-bold text-sm">
-          1
+          5
         </span>
         Property Photos
       </h2>
@@ -338,7 +338,7 @@ const PostProperty = () => {
               } else if (propertyType === "COMMERCIAL") {
                 return type === "RENT" || type === "SELL";
               } else if (propertyType === "PLOT") {
-                return type === "SELL" || type === "RESELL";
+                return type === "" || type === "RESELL";
               }
               return false;
             })
@@ -376,7 +376,7 @@ const PostProperty = () => {
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-4 flex items-center">
           <span className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3 text-indigo-600 font-bold text-sm">
-            2
+            1
           </span>
           Property Details
         </h2>
@@ -409,6 +409,18 @@ const PostProperty = () => {
                   </button>
                 ))}
               </div>
+
+              <select
+              className="w-full p-3 border border-gray-300 rounded-xl mb-3 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+              value={propertyAge}
+              onChange={(e) => setPropertyAge(e.target.value)}
+            >
+              <option value="">Age of Property</option>
+              <option value="<1">Less than 1 year</option>
+              <option value="3-5">3 to 5 years</option>
+              <option value="5-10">5 to 10 years</option>
+              <option value=">10">More than 10 years</option>
+            </select>
 
               <div className="flex space-x-3 mb-3">
                 <select
@@ -659,7 +671,7 @@ const PostProperty = () => {
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-4 flex items-center">
           <span className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3 text-indigo-600 font-bold text-sm">
-            3
+            2
           </span>
           Location Details
         </h2>
@@ -712,7 +724,7 @@ const PostProperty = () => {
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-4 flex items-center">
           <span className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3 text-indigo-600 font-bold text-sm">
-            4
+            3
           </span>
           {propertyType === "RESIDENTIAL" &&
             transactionType === "RENT" &&
@@ -873,7 +885,7 @@ const PostProperty = () => {
                 />
               </div>
 
-              <div className="flex flex-wrap gap-2 mb-3">
+              {/* <div className="flex flex-wrap gap-2 mb-3">
                 <span className="text-sm text-gray-600 w-full mb-2">
                   Amenities:
                 </span>
@@ -897,7 +909,7 @@ const PostProperty = () => {
                     </button>
                   )
                 )}
-              </div>
+              </div> */}
 
               <div className="flex flex-wrap gap-2 mb-3">
                 <span className="text-sm text-gray-600 w-full mb-2">
@@ -985,7 +997,7 @@ const PostProperty = () => {
               onChange={(e) => setAvailableFrom(e.target.value)}
             />
 
-            <div className="flex flex-wrap gap-2 mb-3">
+            {/* <div className="flex flex-wrap gap-2 mb-3">
               <span className="text-sm text-gray-600 w-full mb-2">
                 Amenities:
               </span>
@@ -1012,7 +1024,7 @@ const PostProperty = () => {
                   {amenity}
                 </button>
               ))}
-            </div>
+            </div> */}
           </>
         )}
 
@@ -1043,7 +1055,7 @@ const PostProperty = () => {
               onChange={(e) => setDescription(e.target.value)}
             />
 
-            <div className="flex flex-wrap gap-2 mb-3">
+            {/* <div className="flex flex-wrap gap-2 mb-3">
               <span className="text-sm text-gray-600 w-full mb-2">
                 Amenities:
               </span>
@@ -1063,7 +1075,7 @@ const PostProperty = () => {
                   {amenity}
                 </button>
               ))}
-            </div>
+            </div> */}
           </>
         )}
       </div>
@@ -1077,7 +1089,7 @@ const PostProperty = () => {
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-4 flex items-center">
           <span className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mr-3 text-indigo-600 font-bold text-sm">
-            5
+            4
           </span>
           Amenities
         </h2>
@@ -1116,12 +1128,13 @@ const PostProperty = () => {
         </div>
         <div className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
           <form onSubmit={handleSubmit}>
-            {renderPropertyPhotos()}
             {renderBasicSelection()}
             {renderPropertyDetails()}
             {renderLocationDetails()}
             {renderPricingDetails()}
             {renderAmenities()}
+            {renderPropertyPhotos()}
+
             <button
               type="submit"
               className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 px-6 rounded-xl text-lg font-semibold hover:from-indigo-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"

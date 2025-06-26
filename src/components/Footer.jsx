@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { Home, MapPin } from 'lucide-react';
 
 const Footer = () => {
+
+  const currentYear = new Date().getFullYear();
+  
   return (
     <footer className="bg-gray-900 text-white">
       {/* Main Footer */}
@@ -84,17 +87,12 @@ const Footer = () => {
 
       {/* Sub Footer */}
       <div className="bg-gray-800 border-t border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 text-center md:text-left">
-            <p className="text-gray-400 text-sm">© 2025 Gharkul. All rights reserved.</p>
-            <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6 text-sm text-gray-400">
-              Sitemap
-              Accessibility
-              Careers
-            </div>
-          </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 text-center md:text-center">
+          <p className="text-gray-400 text-sm">© {currentYear} Gharkul. All rights reserved.</p>
         </div>
       </div>
+    </div>
     </footer>
   );
 };

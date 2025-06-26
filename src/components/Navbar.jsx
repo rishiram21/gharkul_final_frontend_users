@@ -63,7 +63,7 @@ const Navbar = () => {
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
-                Subcription
+                Subscription
               </Link>
             {/* <Link
               to="/about"
@@ -201,7 +201,7 @@ const Navbar = () => {
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
-                Subcription
+                Subscription
               </Link>
               <Link
                 to="/about"

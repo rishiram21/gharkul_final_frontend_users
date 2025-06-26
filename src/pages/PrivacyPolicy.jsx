@@ -353,7 +353,7 @@ const PrivacyPolicy = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="w-4 h-4" />
-                <span>Phone: +91-800-PROPERTY (800-776-7378)</span>
+                <span>Phone: +91 96327 48927</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Calendar className="w-4 h-4" />
@@ -586,9 +586,9 @@ const PrivacyPolicy = () => {
                     <h4 className="font-semibold mb-2">Email Support</h4>
                     <p className="text-gray-300 text-sm mb-2">Get detailed help via email</p>
                     <div className="space-y-1 text-sm">
-                      <p>General: support@propertyhub.com</p>
-                      <p>Privacy: privacy@propertyhub.com</p>
-                      <p>Refunds: refunds@propertyhub.com</p>
+                      <p>General: gharkul@gmail.com</p>
+                      <p>Privacy: support@gharkul.com</p>
+                      <p>Refunds: refunds@gharkul.com</p>
                     </div>
                   </div>
                   
@@ -599,8 +599,7 @@ const PrivacyPolicy = () => {
                     <h4 className="font-semibold mb-2">Phone Support</h4>
                     <p className="text-gray-300 text-sm mb-2">Speak with our team directly</p>
                     <div className="space-y-1 text-sm">
-                      <p>+91-800-PROPERTY</p>
-                      <p>(800-776-7378)</p>
+                      <p>+91 96327 48927</p>
                       <p className="text-gray-400">Mon-Fri: 9 AM - 6 PM IST</p>
                     </div>
                   </div>
@@ -612,15 +611,13 @@ const PrivacyPolicy = () => {
                     <h4 className="font-semibold mb-2">Office Address</h4>
                     <p className="text-gray-300 text-sm mb-2">Visit us in person</p>
                     <div className="space-y-1 text-sm">
-                      <p>PropertyHub Technologies Pvt Ltd</p>
-                      <p>Level 4, Tech Park Plaza</p>
-                      <p>Hinjewadi, Pune - 411057</p>
-                      <p>Maharashtra, India</p>
+                      <p>Wakad Road</p>
+                      <p>Hinjewadi</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-6 pt-6 border-t border-gray-700">
+                {/* <div className="mt-6 pt-6 border-t border-gray-700">
                   <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
                     <div className="text-sm text-gray-300">
                       <p>Response Time: Email (24-48 hours) | Phone (Immediate) | Live Chat (5 minutes)</p>
@@ -634,7 +631,7 @@ const PrivacyPolicy = () => {
                       </button>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
 
@@ -649,8 +646,8 @@ const PrivacyPolicy = () => {
                 <div>
                   <h4 className="font-semibold text-yellow-900 mb-2">Regulatory Compliance</h4>
                   <ul className="text-yellow-800 space-y-1">
-                    <li>• RERA Registration: MH/12345/A/2024</li>
-                    <li>• GST Number: 27AABCP1234M1Z5</li>
+                    <li>• RERA Registration: NA</li>
+                    <li>• GST Number: NA</li>
                     <li>• ISO 27001:2013 Certified</li>
                     <li>• Consumer Protection Act, 2019 Compliant</li>
                   </ul>
